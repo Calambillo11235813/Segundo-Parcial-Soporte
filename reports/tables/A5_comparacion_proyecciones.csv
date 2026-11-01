@@ -1,0 +1,5 @@
+﻿Proyección,Confianza (15 vecinos),Varianza conservada (%)
+PCA,0.899177228391538,70.18459488892597
+t-SNE (perplexity 5),0.9669487812740504,
+t-SNE (perplexity 30),0.9769857056265338,
+t-SNE (perplexity 50),0.9755435667472895,
