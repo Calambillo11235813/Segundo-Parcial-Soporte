@@ -1,0 +1,4 @@
+﻿Modelo,Parámetros óptimos,Exactitud en prueba,% falsos positivos,% falsos negativos,F1-Score,AUC-ROC
+kNN,"k = 3, metric = 'manhattan'",86.39%,3.93%,9.67%,0.4354,0.7566
+Naive Bayes,— (GaussianNB estándar),81.97%,11.97%,6.07%,0.4954,0.8084
+Árbol de decisión,"criterion = 'entropy', max_depth = 10, min_leaf = 20",83.77%,7.70%,8.52%,0.4407,0.8438

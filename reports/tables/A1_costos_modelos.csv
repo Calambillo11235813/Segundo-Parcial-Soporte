@@ -1,0 +1,4 @@
+﻿Modelo,FP,FN,Costo FP (UM),Ingreso perdido FN (UM),Contactos,Ganancia (UM),Aceptaciones en el 20 %,Captura en el 20 % (%),Ganancia en el 20 % (UM)
+kNN,24,59,72,472,56,184,52,57.14285714285714,206
+Naive Bayes,73,37,219,296,127,213,53,58.24175824175825,217
+Árbol de decisión,47,52,141,416,86,171,55,60.43956043956044,239

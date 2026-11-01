@@ -31,10 +31,12 @@ def ejecutar_auditoria():
     print(f"  - Duplicados evaluando con columna 'ID': {dup_raw_id}")
     print(f"  - Duplicados reales ignorando 'ID': {dup_raw_no_id} filas")
 
-    # Replicar limpieza idéntica a 00_Datos.ipynb
+    # Replicar la limpieza de 00_Datos.ipynb SIN quitar duplicados, para medir su
+    # efecto. Las secciones [2] a [5] describen ese estado anterior a la corrección;
+    # la sección [6] verifica los archivos que hoy usa el proyecto.
     df = df_raw.copy()
     df['Income'] = df['Income'].fillna(df['Income'].median())
-    df['Age'] = 2026 - df['Year_Birth']
+    df['Age'] = 2014 - df['Year_Birth']
     df = df[(df['Age'] <= 100) & (df['Income'] < 200000)].copy()
 
     df['Total_Spent'] = (df['MntWines'] + df['MntFruits'] + df['MntMeatProducts'] + 
@@ -56,7 +58,7 @@ def ejecutar_auditoria():
     columnas_descartar = ['ID', 'Year_Birth', 'Dt_Customer', 'Education', 'Marital_Status', 'Z_CostContact', 'Z_Revenue']
     df_clean = df.drop(columns=columnas_descartar).reset_index(drop=True)
     
-    print("\n[2] AUDITORÍA EN BASE LIMPIA (N = 2.236):")
+    print("\n[2] AUDITORÍA EN BASE SIN DEPURAR (N = 2.236):")
     print(f"  - Duplicados en todas las variables (incluyendo Response): {df_clean.duplicated().sum()} (Únicos: {len(df_clean.drop_duplicates())})")
     
     X = df_clean.drop(columns=['Response'])
@@ -105,7 +107,7 @@ def ejecutar_auditoria():
     pos_unicos = df_unicos.index.to_numpy()
     ari_a2 = adjusted_rand_score(km_comp.labels_[pos_unicos], km_uniq.labels_)
 
-    print("\n[4] IMPACTO EN ÁREA A2 (K-MEANS 3 SEGMENTOS):")
+    print("\n[4] IMPACTO EN ÁREA A2 (K-MEANS 3 SEGMENTOS, CON 7 COMPONENTES FIJOS):")
     print(f"  - Silhouette N=2.236: {silhouette_score(X_comp_pca, km_comp.labels_):.4f} | Silhouette N=2.031: {silhouette_score(X_uniq_pca, km_uniq.labels_):.4f}")
     print(f"  - Índice Rand Ajustado (ARI) en casos comunes: {ari_a2:.4f} (> 99% de concordancia)")
     print("  -> Conclusión A2: La estructura de 3 segmentos es ultra-estable; los duplicados no alteran la segmentación macro.")
@@ -127,6 +129,20 @@ def ejecutar_auditoria():
     print(f"    * Nicho 'Premium sin descuentos' (1): {tamanos_a5_uniq.get(1, 0)} clientes.")
     print(f"  - Con COMPLETA (N=2.236): Grupos detectados: {tamanos_a5_comp}")
     print("    * ADVERTENCIA DBSCAN: Con duplicados aparecen micro-clusters espurios de densidad artificial (Clusters 2 y 3 con tamaño 5 c/u).")
+
+    # 5. Verificación de los archivos generados por 00_Datos.ipynb
+    base_final = pd.read_csv('data/processed/data_limpia_original.csv')
+    train_final = pd.read_csv('data/processed/train_scaled.csv').drop(columns=['Response'])
+    test_final = pd.read_csv('data/processed/test_scaled.csv').drop(columns=['Response'])
+
+    # Los valores escalados se redondean para compararlos sin errores de coma flotante
+    gemelos = test_final.round(6).merge(train_final.round(6).drop_duplicates(), how='inner')
+
+    print("\n[6] VERIFICACIÓN DE LOS ARCHIVOS ACTUALES DEL PROYECTO:")
+    print(f"  - Filas en la base limpia: {len(base_final)}")
+    print(f"  - Filas con predictores repetidos: {base_final.drop(columns=['Response']).duplicated().sum()}")
+    print(f"  - Entrenamiento: {len(train_final)} | Prueba: {len(test_final)}")
+    print(f"  - Filas de prueba con gemelo en entrenamiento: {len(gemelos)}")
     print("=" * 75)
 
 if __name__ == '__main__':
