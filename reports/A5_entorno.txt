@@ -1,11 +1,11 @@
-Python: 3.12.6
+Python: 3.13.7
 
 Librerías:
-numpy==2.4.1
+numpy==2.2.6
 pandas==3.0.0
 matplotlib==3.10.8
 seaborn==0.13.2
-scikit-learn==1.8.0
-scipy==1.17.0
-ipython==9.9.0
-ipykernel==6.31.0
+scikit-learn==1.9.1
+scipy==1.18.1
+ipython==9.17.1
+ipykernel==7.4.0
